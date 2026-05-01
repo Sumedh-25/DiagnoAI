@@ -1,5 +1,5 @@
 streamlit
 groq
 PyMuPDF
-pillow
+Pillow>=10.4.0
 python-docx
