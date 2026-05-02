@@ -223,8 +223,8 @@ class AIProcessor:
         therm_image_labels = [img.label for img in thermal_result.images]
 
         # Use more text for better extraction — Groq handles 128K tokens
-        inspection_text = inspection_result.full_text[:8000]
-        thermal_text    = thermal_result.full_text[:4000]
+        inspection_text = inspection_result.full_text[:5000]
+        thermal_text    = thermal_result.full_text[:2000]
 
         # Build thermal summary to help AI map temperatures to areas
         thermal_summary = self._build_thermal_summary(thermal_result.full_text)
@@ -269,10 +269,10 @@ THERMAL DATA SUMMARY — USE THIS TO MAP TEMPERATURES TO AREAS
 AVAILABLE IMAGE LABELS
 ═══════════════════════════════════════════════════════════
 Inspection Report Images ({len(insp_image_labels)} total images):
-{chr(10).join(insp_image_labels[:10]) if insp_image_labels else 'No images extracted'}
+{chr(10).join(insp_image_labels[:5]) if insp_image_labels else 'No images extracted'}
 
 Thermal Report Images ({len(therm_image_labels)} total images):
-{chr(10).join(therm_image_labels[:10]) if therm_image_labels else 'No images extracted'}
+{chr(10).join(therm_image_labels[:5]) if therm_image_labels else 'No images extracted'}
 
 INSTRUCTION FOR IMAGES:
 - Assign inspection images to areas based on page number sequence
@@ -369,7 +369,7 @@ Return ONLY the JSON. Start with {{ end with }}
 
         # Group by image number
         result = "THERMAL READINGS BY IMAGE:\n"
-        result += "\n".join(summary[:60])  # Limit to 60 lines
+        result += "\n".join(summary[:20])  # Limit to 60 lines
         result += "\n\nNote: Map these thermal readings to inspection areas by sequence order."
         return result
 
@@ -402,7 +402,7 @@ Return ONLY the JSON. Start with {{ end with }}
                     }
                 ],
                 temperature     = 0.1,   # Low = factual and consistent
-                max_tokens      = 8000,
+                max_tokens      = 4000,
                 response_format = {"type": "json_object"},
             )
             return response.choices[0].message.content
